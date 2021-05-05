@@ -1,0 +1,36 @@
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  projects: '**/*.csproj'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  projectName: 'Communication'
+
+steps:
+
+# Restore
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: 'restore'
+    feedsToUse: 'select'
+    vstsFeed: '324fecad-e720-4956-affe-3d3c6eacabea/9d0a8f0a-7922-465a-84f1-464ee6fe78a5'
+    projects: '$(projects)'
+
+# Build
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '$(projects)'
+    arguments: '--configuration $(BuildConfiguration)'
+
+# Test
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    projects: '$(projects)'
+    command: 'test'
